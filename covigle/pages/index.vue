@@ -1,41 +1,62 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        covigle
-      </h1>
-      <h2 class="subtitle">
-        My peachy Nuxt.js project
-      </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
-    </div>
-  </div>
+  <b-container>
+    <b-row>
+      <b-col>
+        <b-form-input
+          v-model="keyword"
+          placeholder="Enter keyword"
+        ></b-form-input>
+      </b-col>
+      <b-col cols="12" md="auto">
+        <b-button variant="outline-primary" @click="search">Search</b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>searching : {{ now_keyword }}</b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-table striped hover :items="items"></b-table>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+// import Logo from '~/components/Logo.vue'
+
+const items = []
+
+for (let i = 0; i < 100; i++) {
+  const item = {}
+  item.source = 'biorxiv'
+  item.title = 'title' + i
+  item.author = 'author' + i
+  item.url = 'https://doi.org/10.1101/001727'
+  items.push(item)
+}
 
 export default {
   components: {
-    Logo
+    // Logo
+  },
+  data() {
+    return {
+      items,
+      now_keyword: '',
+      keyword: ''
+    }
+  },
+  methods: {
+    search() {
+      this.now_keyword = this.keyword
+    }
   }
 }
 </script>
 
 <style>
-.container {
+/* .container {
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
@@ -64,5 +85,5 @@ export default {
 
 .links {
   padding-top: 15px;
-}
+} */
 </style>
