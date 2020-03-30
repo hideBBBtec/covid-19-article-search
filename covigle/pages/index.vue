@@ -23,33 +23,62 @@
 </template>
 
 <script>
-// import Logo from '~/components/Logo.vue'
+import axios from 'axios'
 
-const items = []
+// const items = []
 
-for (let i = 0; i < 100; i++) {
-  const item = {}
-  item.source = 'biorxiv'
-  item.title = 'title' + i
-  item.author = 'author' + i
-  item.url = 'https://doi.org/10.1101/001727'
-  items.push(item)
-}
+// for (let i = 0; i < 100; i++) {
+//   const item = {}
+//   item.source = 'biorxiv'
+//   item.title = 'title' + i
+//   item.author = 'author' + i
+//   item.url = 'https://doi.org/10.1101/001727'
+//   items.push(item)
+// }
 
 export default {
-  components: {
-    // Logo
-  },
+  components: {},
+  // mounted() {
+  //   console.log('mounting...')
+  // },
   data() {
     return {
-      items,
+      items: [],
       now_keyword: '',
       keyword: ''
     }
   },
   methods: {
     search() {
+      this.$nuxt.$loading.start()
       this.now_keyword = this.keyword
+      const template = {
+        source: 'biorxiv',
+        title: 'title',
+        author: 'author',
+        journal: 'journal',
+        url: 'https://doi.org/10.1101/001727'
+      }
+
+      axios
+        .post(
+          'https://tonedtcbwe.execute-api.ap-northeast-1.amazonaws.com/search',
+          { keyword: this.keyword }
+        )
+        .then((response) => {
+          console.log(`get success`, response)
+          for (let i = 0; i < Object.keys(response.data.source_x).length; i++) {
+            const tmp = {}
+            Object.assign(tmp, template)
+            tmp.source = response.data.source_x[i]
+            tmp.title = response.data.title[i]
+            tmp.author = response.data.authors[i]
+            tmp.journal = response.data.journal[i]
+            tmp.url = response.data.url[i]
+            this.items.push(tmp)
+          }
+          this.$nuxt.$loading.finish()
+        })
     }
   }
 }
